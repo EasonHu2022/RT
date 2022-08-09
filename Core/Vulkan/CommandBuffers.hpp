@@ -1,32 +1,32 @@
 #pragma once
 
-#include "Vulkan.hpp"
+#include "wrapper.hpp"
 #include <vector>
 
 namespace Vulkan
 {
 	class CommandPool;
 
-	class CommandBuffers final
+	class CommandBuffers 
 	{
 	public:
 
-		VULKAN_NON_COPIABLE(CommandBuffers)
+		VULKAN_OBJECT(CommandBuffers)
 
 		CommandBuffers(CommandPool& commandPool, uint32_t size);
 		~CommandBuffers();
 
-		uint32_t Size() const { return static_cast<uint32_t>(commandBuffers_.size()); }
-		VkCommandBuffer& operator [] (const size_t i) { return commandBuffers_[i]; }
+		uint32_t get_size() const { return static_cast<uint32_t>(commandBuffers.size()); }
+		VkCommandBuffer& operator [] (const size_t i) { return commandBuffers[i]; }
 
 		VkCommandBuffer Begin(size_t i);
 		void End(size_t);
 
 	private:
 
-		const CommandPool& commandPool_;
+		const CommandPool& commandPool;
 
-		std::vector<VkCommandBuffer> commandBuffers_;
+		std::vector<VkCommandBuffer> commandBuffers;
 	};
 
 }
