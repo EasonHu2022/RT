@@ -8,7 +8,7 @@ workspace "RayTracer"
 	flags "NoPCH"
 	flags "MultiProcessorCompile"
 
-	startproject "Core"
+	startproject "RayTracing VK"
 
 	debugdir "%{wks.location}"
 	objdir "_build_/%{cfg.buildcfg}-%{cfg.platform}-%{cfg.toolset}"
