@@ -12,12 +12,13 @@ namespace Vulkan
 	/// </summary>
 	class Image
 	{
+	public:
 		Image(const Image&) = delete;
 		Image& operator = (const Image&) = delete;
 		Image& operator = (Image&&) = delete;
 
 		//Image(const Device& device, VkExtent2D extent, VkFormat format);
-		Image(const Device& device, Allocator const& allocator, VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VmaMemoryUsage aMemoryUsage);
+		Image(const Device& device, Allocator const& allocator, VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage);
 		Image(Image&& other) noexcept;
 		~Image();
 		const class Device& get_device() const { return device; }

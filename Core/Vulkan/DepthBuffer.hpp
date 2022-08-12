@@ -7,11 +7,12 @@ namespace Vulkan
 	class CommandPool;
 	class ImageView;
 	class Image;
+	class Allocator;
 	class DepthBuffer 
 	{
 	public:
 		VULKAN_OBJECT(DepthBuffer)
-		DepthBuffer(CommandPool& commandPool, VkExtent2D extent);
+		DepthBuffer(Allocator const& allocator, CommandPool& commandPool, VkExtent2D extent);
 		~DepthBuffer();
 		VkFormat get_format() const { return format; }
 		const class ImageView& get_imageView() const { return *imageView; }

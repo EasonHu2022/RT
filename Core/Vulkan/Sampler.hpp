@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vulkan.hpp"
+#include "Wrapper.hpp"
 
 namespace Vulkan
 {
@@ -25,22 +25,22 @@ namespace Vulkan
 		float MaxLod = 0.0f;
 	};
 
-	class Sampler final
+	class Sampler
 	{
 	public:
 
-		VULKAN_NON_COPIABLE(Sampler)
+		VULKAN_OBJECT(Sampler)
 
 		Sampler(const Device& device, const SamplerConfig& config);
 		~Sampler();
 
-		const class Device& Device() const { return device_; }
+		const class Device& get_device() const { return device; }
 
 	private:
 
-		const class Device& device_;
+		const class Device& device;
 
-		VULKAN_HANDLE(VkSampler, sampler_)
+		VULKAN_HANDLES(VkSampler, sampler)
 	};
 
 }

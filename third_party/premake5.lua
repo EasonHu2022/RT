@@ -29,6 +29,32 @@ project( "vma" )
 			"-Wno-reorder"
 		}
 	filter {}
+	includedirs
+	{
+		"./VulkanMemoryAllocator/include",
 
+	}
 	files( "VulkanMemoryAllocator/src/*.cpp" )
+	files( "VulkanMemoryAllocator/include/*.h" )
+	
+project( "x-glm" )
+	kind "Utility"
+
+	location "."
+
+	files( "glm/include/**.h" )
+	files( "glm/include/**.hpp" )
+	files( "glm/include/**.inl" )
+	
+project( "x-stb" )
+	kind "StaticLib"
+
+	location "."
+	includedirs
+	{
+		"./stb/include",
+
+	}
+	files( "stb/src/*.c" )
+	files( "stb/include/*.h" )
 --EOF

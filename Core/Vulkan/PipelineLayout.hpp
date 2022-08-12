@@ -1,26 +1,26 @@
 #pragma once
 
-#include "Vulkan.hpp"
+#include "Wrapper.hpp"
 
 namespace Vulkan
 {
 	class DescriptorSetLayout;
 	class Device;
 
-	class PipelineLayout final
+	class PipelineLayout
 	{
 	public:
 
-		VULKAN_NON_COPIABLE(PipelineLayout)
+		VULKAN_OBJECT(PipelineLayout)
 
 		PipelineLayout(const Device& device, const DescriptorSetLayout& descriptorSetLayout);
 		~PipelineLayout();
 
 	private:
 
-		const Device& device_;
+		const Device& device;
 
-		VULKAN_HANDLE(VkPipelineLayout, pipelineLayout_)
+		VULKAN_HANDLES(VkPipelineLayout, pipelineLayout)
 	};
 
 }

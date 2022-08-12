@@ -5,6 +5,7 @@
 #include "Window.hpp"
 #include <memory>
 #include "SwapChain.hpp"
+#include "Allocator.hpp"
 namespace Vulkan
 {
 	class Application
@@ -28,6 +29,8 @@ namespace Vulkan
 
 		void Start();
 	private:
+		std::unique_ptr<class Allocator> allocator;
+
 		std::unique_ptr<class Window> window;
 		std::unique_ptr<class SwapChain> swapChain;
 		const VkPresentModeKHR presentMode;

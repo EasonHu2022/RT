@@ -8,9 +8,9 @@
 #include "RenderPass.hpp"
 #include "ShaderModule.hpp"
 #include "SwapChain.hpp"
-#include "Assets/Scene.hpp"
-#include "Assets/UniformBuffer.hpp"
-#include "Assets/Vertex.hpp"
+#include "Scene.hpp"
+#include "UniformBuffer.hpp"
+#include "Vertex.hpp"
 
 namespace Vulkan {
 
@@ -20,10 +20,10 @@ GraphicsPipeline::GraphicsPipeline(
 	const std::vector<Assets::UniformBuffer>& uniformBuffers,
 	const Assets::Scene& scene,
 	const bool isWireFrame) :
-	swapChain_(swapChain),
-	isWireFrame_(isWireFrame)
+	swapChain(swapChain),
+	isWireFrame(isWireFrame)
 {
-	const auto& device = swapChain.Device();
+	const auto& device = swapChain.get_device();
 	const auto bindingDescription = Assets::Vertex::GetBindingDescription();
 	const auto attributeDescriptions = Assets::Vertex::GetAttributeDescriptions();
 
@@ -42,14 +42,14 @@ GraphicsPipeline::GraphicsPipeline(
 	VkViewport viewport = {};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = static_cast<float>(swapChain.Extent().width);
-	viewport.height = static_cast<float>(swapChain.Extent().height);
+	viewport.width = static_cast<float>(swapChain.get_extent().width);
+	viewport.height = static_cast<float>(swapChain.get_extent().height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
 	VkRect2D scissor = {};
 	scissor.offset = { 0, 0 };
-	scissor.extent = swapChain.Extent();
+	scissor.extent = swapChain.get_extent();
 
 	VkPipelineViewportStateCreateInfo viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -121,9 +121,9 @@ GraphicsPipeline::GraphicsPipeline(
 		{2, static_cast<uint32_t>(scene.TextureSamplers().size()), VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT}
 	};
 
-	descriptorSetManager_.reset(new DescriptorSetManager(device, descriptorBindings, uniformBuffers.size()));
+	descriptorSetManager.reset(new DescriptorSetManager(device, descriptorBindings, uniformBuffers.size()));
 
-	auto& descriptorSets = descriptorSetManager_->DescriptorSets();
+	auto& descriptorSets = descriptorSetManager->get_descriptorSets();
 
 	for (uint32_t i = 0; i != swapChain.Images().size(); ++i)
 	{
@@ -155,12 +155,12 @@ GraphicsPipeline::GraphicsPipeline(
 			descriptorSets.Bind(i, 2, *imageInfos.data(), static_cast<uint32_t>(imageInfos.size()))
 		};
 
-		descriptorSets.UpdateDescriptors(i, descriptorWrites);
+		descriptorSets.update_descriptors(i, descriptorWrites);
 	}
 
 	// Create pipeline layout and render pass.
-	pipelineLayout_.reset(new class PipelineLayout(device, descriptorSetManager_->DescriptorSetLayout()));
-	renderPass_.reset(new class RenderPass(swapChain, depthBuffer, VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_LOAD_OP_CLEAR));
+	pipelineLayout.reset(new class PipelineLayout(device, descriptorSetManager->get_descriptorSet_layout()));
+	renderPass.reset(new class RenderPass(swapChain, depthBuffer, VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_LOAD_OP_CLEAR));
 
 	// Load shaders.
 	const ShaderModule vertShader(device, "../assets/shaders/Graphics.vert.spv");
@@ -168,8 +168,8 @@ GraphicsPipeline::GraphicsPipeline(
 
 	VkPipelineShaderStageCreateInfo shaderStages[] =
 	{
-		vertShader.CreateShaderStage(VK_SHADER_STAGE_VERTEX_BIT),
-		fragShader.CreateShaderStage(VK_SHADER_STAGE_FRAGMENT_BIT)
+		vertShader.create_shaderStage(VK_SHADER_STAGE_VERTEX_BIT),
+		fragShader.create_shaderStage(VK_SHADER_STAGE_FRAGMENT_BIT)
 	};
 
 	// Create graphic pipeline
@@ -187,30 +187,30 @@ GraphicsPipeline::GraphicsPipeline(
 	pipelineInfo.pDynamicState = nullptr; // Optional
 	pipelineInfo.basePipelineHandle = nullptr; // Optional
 	pipelineInfo.basePipelineIndex = -1; // Optional
-	pipelineInfo.layout = pipelineLayout_->Handle();
-	pipelineInfo.renderPass = renderPass_->Handle();
+	pipelineInfo.layout = pipelineLayout->Handle();
+	pipelineInfo.renderPass = renderPass->Handle();
 	pipelineInfo.subpass = 0;
 
-	Check(vkCreateGraphicsPipelines(device.Handle(), nullptr, 1, &pipelineInfo, nullptr, &pipeline_),
+	Check(vkCreateGraphicsPipelines(device.Handle(), nullptr, 1, &pipelineInfo, nullptr, &pipeline),
 		"create graphics pipeline");
 }
 
 GraphicsPipeline::~GraphicsPipeline()
 {
-	if (pipeline_ != nullptr)
+	if (pipeline != nullptr)
 	{
-		vkDestroyPipeline(swapChain_.Device().Handle(), pipeline_, nullptr);
-		pipeline_ = nullptr;
+		vkDestroyPipeline(swapChain.get_device().Handle(), pipeline, nullptr);
+		pipeline = nullptr;
 	}
 
-	renderPass_.reset();
-	pipelineLayout_.reset();
-	descriptorSetManager_.reset();
+	renderPass.reset();
+	pipelineLayout.reset();
+	descriptorSetManager.reset();
 }
 
 VkDescriptorSet GraphicsPipeline::DescriptorSet(const uint32_t index) const
 {
-	return descriptorSetManager_->DescriptorSets().Handle(index);
+	return descriptorSetManager->get_descriptorSets().Handle(index);
 }
 
 }

@@ -4,8 +4,8 @@
 
 namespace Vulkan {
 
-PipelineLayout::PipelineLayout(const Device & device, const DescriptorSetLayout& descriptorSetLayout) :
-	device_(device)
+PipelineLayout::PipelineLayout(const Device & _device, const DescriptorSetLayout& descriptorSetLayout) :
+	device(_device)
 {
 	VkDescriptorSetLayout descriptorSetLayouts[] = { descriptorSetLayout.Handle() };
 
@@ -16,16 +16,16 @@ PipelineLayout::PipelineLayout(const Device & device, const DescriptorSetLayout&
 	pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
-	Check(vkCreatePipelineLayout(device_.Handle(), &pipelineLayoutInfo, nullptr, &pipelineLayout_),
+	Check(vkCreatePipelineLayout(device.Handle(), &pipelineLayoutInfo, nullptr, &pipelineLayout),
 		"create pipeline layout");
 }
 
 PipelineLayout::~PipelineLayout()
 {
-	if (pipelineLayout_ != nullptr)
+	if (pipelineLayout != nullptr)
 	{
-		vkDestroyPipelineLayout(device_.Handle(), pipelineLayout_, nullptr);
-		pipelineLayout_ = nullptr;
+		vkDestroyPipelineLayout(device.Handle(), pipelineLayout, nullptr);
+		pipelineLayout = nullptr;
 	}
 }
 

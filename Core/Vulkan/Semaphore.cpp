@@ -3,29 +3,29 @@
 
 namespace Vulkan {
 
-Semaphore::Semaphore(const class Device& device) :
-	device_(device)
+Semaphore::Semaphore(const class Device& _device) :
+	device(_device)
 {
 	VkSemaphoreCreateInfo semaphoreInfo = {};
 	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-	Check(vkCreateSemaphore(device.Handle(), &semaphoreInfo, nullptr, &semaphore_),
+	Check(vkCreateSemaphore(device.Handle(), &semaphoreInfo, nullptr, &semaphore),
 		"create semaphores");
 }
 
 Semaphore::Semaphore(Semaphore&& other) noexcept :
-	device_(other.device_),
-	semaphore_(other.semaphore_)
+	device(other.device),
+	semaphore(other.semaphore)
 {
-	other.semaphore_ = nullptr;
+	other.semaphore = nullptr;
 }
 
 Semaphore::~Semaphore()
 {
-	if (semaphore_ != nullptr)
+	if (semaphore != nullptr)
 	{
-		vkDestroySemaphore(device_.Handle(), semaphore_, nullptr);
-		semaphore_ = nullptr;
+		vkDestroySemaphore(device.Handle(), semaphore, nullptr);
+		semaphore = nullptr;
 	}
 }
 

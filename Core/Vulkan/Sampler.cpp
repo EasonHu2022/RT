@@ -1,11 +1,10 @@
 #include "Sampler.hpp"
 #include "Device.hpp"
-#include "Utilities/Exception.hpp"
 
 namespace Vulkan {
 
-Sampler::Sampler(const class Device& device, const SamplerConfig& config) :
-	device_(device)
+Sampler::Sampler(const class Device& _device, const SamplerConfig& config) :
+	device(_device)
 {
 	VkSamplerCreateInfo samplerInfo = {};
 	samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -25,18 +24,16 @@ Sampler::Sampler(const class Device& device, const SamplerConfig& config) :
 	samplerInfo.minLod = config.MinLod;
 	samplerInfo.maxLod = config.MaxLod;
 
-	if (vkCreateSampler(device.Handle(), &samplerInfo, nullptr, &sampler_) != VK_SUCCESS)
-	{
-		Throw(std::runtime_error("failed to create sampler"));
-	}
+	Check(vkCreateSampler(device.Handle(), &samplerInfo, nullptr, &sampler), "failed to create sampler");
+
 }
 
 Sampler::~Sampler()
 {
-	if (sampler_ != nullptr)
+	if (sampler != nullptr)
 	{
-		vkDestroySampler(device_.Handle(), sampler_, nullptr);
-		sampler_ = nullptr;
+		vkDestroySampler(device.Handle(), sampler, nullptr);
+		sampler = nullptr;
 	}
 }
 

@@ -7,7 +7,7 @@ namespace Vulkan {
 
 	Image::Image(const Device& _device, Allocator const& _allocator, 
 		VkExtent2D _extent, VkFormat _format, VkImageTiling tiling, 
-		VkImageUsageFlags usage, VmaMemoryUsage aMemoryUsage)
+		VkImageUsageFlags usage)
 		:allocator(_allocator),device(_device),extent(_extent),format(_format)
 	{
 		VkImageCreateInfo imageInfo = {};

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vulkan.hpp"
+#include "Wrapper.hpp"
 
 namespace Vulkan
 {
@@ -18,13 +18,13 @@ namespace Vulkan
 		Semaphore(Semaphore&& other) noexcept;
 		~Semaphore();
 
-		const class Device& Device() const { return device_; }
+		const class Device& get_device() const { return device; }
 
 	private:
 
-		const class Device& device_;
+		const class Device& device;
 
-		VULKAN_HANDLE(VkSemaphore, semaphore_)
+		VULKAN_HANDLES(VkSemaphore, semaphore)
 	};
 
 }

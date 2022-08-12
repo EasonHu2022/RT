@@ -8,7 +8,7 @@ workspace "RayTracer"
 	flags "NoPCH"
 	flags "MultiProcessorCompile"
 
-	startproject "Core"
+	startproject "RayTracing VK"
 
 	debugdir "%{wks.location}"
 	objdir "_build_/%{cfg.buildcfg}-%{cfg.platform}-%{cfg.toolset}"
@@ -64,6 +64,8 @@ project "RayTracing VK"
 		"Core/**.h",
 		"./third_party/ImGUI/**.h",
 		"./third_party/ImGUI/**.cpp",
+		"./third_party/tiny_obj_loader/**.h",
+		"./third_party/tiny_obj_loader/**.cc",
 	}
 
 	kind "ConsoleApp"
@@ -75,10 +77,14 @@ project "RayTracing VK"
 	{
 		"./third_party/GLFW/include",
 		"./third_party/volk/include",
+		"./third_party/glm/include",
+		"./third_party/stb/include",
+		"./third_party/tiny_obj_loader",
 		"./third_party/VulkanMemoryAllocator/include",
 		"./third_party/ImGUI",
 		"./Core/Utilities",
-		"./Core/Vulkan"
+		"./Core/Vulkan",
+		"./Core/Assets"
 	}
 	
 	defines 
@@ -90,5 +96,6 @@ project "RayTracing VK"
 	links "x-volk"
 	links "GLFW"
 	links "vma"
-
+	links "x-glm"
+	links "x-stb"
 --EOF

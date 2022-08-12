@@ -2,6 +2,7 @@
 
 #include "Wrapper.hpp"
 #include <vector>
+#include "Device.hpp"
 
 namespace  Vulkan {
 
@@ -78,25 +79,5 @@ inline std::vector<TValue> get_vkEnumerate(THandle1 handle1, THandle2 handle2, V
 }
 
 
-//********************************************************************************************//
-VkFormat FindSupportedFormat(const Device& device, const std::vector<VkFormat>& candidates, const VkImageTiling tiling, const VkFormatFeatureFlags features)
-{
-	for (auto format : candidates)
-	{
-		VkFormatProperties props;
-		vkGetPhysicalDeviceFormatProperties(device.get_physicalDevice(), format, &props);
 
-		if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)
-		{
-			return format;
-		}
-
-		if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features)
-		{
-			return format;
-		}
-	}
-	std::cerr << "failed to find supported format" << std::endl;	
-
-}
 }
