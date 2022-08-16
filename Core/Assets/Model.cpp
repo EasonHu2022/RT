@@ -51,6 +51,7 @@ Model Model::LoadModel(const std::string& filename)
 	
 	if (!objReader.ParseFromFile(filename))
 	{
+		std::cerr << "failed to load model '" + filename + "':\n" + objReader.Error() << std::endl;
 		//Throw(std::runtime_error("failed to load model '" + filename + "':\n" + objReader.Error()));
 	}
 

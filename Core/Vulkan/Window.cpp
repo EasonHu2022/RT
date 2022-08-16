@@ -63,6 +63,11 @@ namespace Vulkan
 		return std::vector<const char*>(glfwExtensions, glfwExtensions + glfwExtensionCount);
 	}
 
+	const char* Window::get_key_name(int key, int scancode) const
+	{
+		return glfwGetKeyName(key, scancode);
+	}
+
 	VkExtent2D Window::get_window_size() const
 	{
 		int width, height;
@@ -93,5 +98,14 @@ namespace Vulkan
 				Loops();
 			}
 		}
+	}
+	bool Window::IsMinimized() const
+	{
+		const auto size = get_framebuffer_size();
+		return size.height == 0 && size.width == 0;
+	}
+	void Window::WaitForEvents() const
+	{
+		glfwWaitEvents();
 	}
 };

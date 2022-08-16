@@ -23,7 +23,7 @@ namespace Vulkan
 		VkQueue get_graphicsQueue() const { return graphicsQueue; }
 		VkQueue get_computeQueue() const { return computeQueue; }
 		VkQueue get_presentQueue() const { return presentQueue; }
-
+		void WaitIdle() const;
 	private:
 		void check_required_extensions(VkPhysicalDevice physicalDevice, const std::vector<const char*>& requiredExtensions) const;
 

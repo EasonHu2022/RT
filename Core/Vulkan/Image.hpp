@@ -1,6 +1,6 @@
 #pragma once
 #include "Wrapper.hpp"
-#include "Allocator.hpp"
+#include "DeviceMemory.hpp"
 namespace Vulkan
 {
 
@@ -18,20 +18,22 @@ namespace Vulkan
 		Image& operator = (Image&&) = delete;
 
 		//Image(const Device& device, VkExtent2D extent, VkFormat format);
-		Image(const Device& device, Allocator const& allocator, VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage);
+		Image(const Device& device, VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage);
 		Image(Image&& other) noexcept;
 		~Image();
 		const class Device& get_device() const { return device; }
 		VkExtent2D get_extent() const { return extent; }
 		VkFormat get_format() const { return format; }
-		const class Allocator& get_allocator() const { return allocator; }
+
+		DeviceMemory allocate_memory(VkMemoryPropertyFlags properties) const;
+		VkMemoryRequirements get_memory_requirements() const;
+
 		void trans_image_layout(CommandPool& commandPool, VkImageLayout newLayout);
-		void Copy(CommandPool& commandPool, const Buffer& buffer);
-		VmaAllocation allocation = VK_NULL_HANDLE;
+		void copy(CommandPool& commandPool, const Buffer& buffer);
+		
 	private:
 
 		const class Device& device;
-		const class Allocator& allocator;
 		const VkExtent2D extent;
 		const VkFormat format;
 		VkImageLayout imageLayout;

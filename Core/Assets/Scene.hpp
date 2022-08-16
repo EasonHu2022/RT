@@ -48,22 +48,22 @@ namespace Assets
 		const std::vector<Texture> textures_;
 
 		std::unique_ptr<Vulkan::Buffer> vertexBuffer_;
-		//std::unique_ptr<Vulkan::DeviceMemory> vertexBufferMemory_;
+		std::unique_ptr<Vulkan::DeviceMemory> vertexBufferMemory_;
 
 		std::unique_ptr<Vulkan::Buffer> indexBuffer_;
-		//std::unique_ptr<Vulkan::DeviceMemory> indexBufferMemory_;
+		std::unique_ptr<Vulkan::DeviceMemory> indexBufferMemory_;
 
 		std::unique_ptr<Vulkan::Buffer> materialBuffer_;
-		//std::unique_ptr<Vulkan::DeviceMemory> materialBufferMemory_;
+		std::unique_ptr<Vulkan::DeviceMemory> materialBufferMemory_;
 
 		std::unique_ptr<Vulkan::Buffer> offsetBuffer_;
-		//std::unique_ptr<Vulkan::DeviceMemory> offsetBufferMemory_;
+		std::unique_ptr<Vulkan::DeviceMemory> offsetBufferMemory_;
 
 		std::unique_ptr<Vulkan::Buffer> aabbBuffer_;
-		//std::unique_ptr<Vulkan::DeviceMemory> aabbBufferMemory_;
+		std::unique_ptr<Vulkan::DeviceMemory> aabbBufferMemory_;
 
 		std::unique_ptr<Vulkan::Buffer> proceduralBuffer_;
-		//std::unique_ptr<Vulkan::DeviceMemory> proceduralBufferMemory_;
+		std::unique_ptr<Vulkan::DeviceMemory> proceduralBufferMemory_;
 
 		std::vector<std::unique_ptr<TextureImage>> textureImages_;
 		std::vector<VkImageView> textureImageViewHandles_;

@@ -5,10 +5,10 @@
 #include "Buffer.hpp"
 namespace Vulkan {
 
-	Image::Image(const Device& _device, Allocator const& _allocator, 
+	Image::Image(const Device& _device, 
 		VkExtent2D _extent, VkFormat _format, VkImageTiling tiling, 
 		VkImageUsageFlags usage)
-		:allocator(_allocator),device(_device),extent(_extent),format(_format)
+		:device(_device),extent(_extent),format(_format), imageLayout(VK_IMAGE_LAYOUT_UNDEFINED)
 	{
 		VkImageCreateInfo imageInfo = {};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -26,10 +26,7 @@ namespace Vulkan {
 		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageInfo.flags = 0; // Optional
 
-		VmaAllocationCreateInfo allocInfo{};
-		allocInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY;
-	
-		Check(vmaCreateImage(allocator.Handle(), &imageInfo, &allocInfo, &image, &allocation, nullptr),
+		Check(vkCreateImage(device.Handle(), &imageInfo, nullptr, &image),
 			"create image");
 	}
 
@@ -47,10 +44,27 @@ namespace Vulkan {
 		extent(other.extent),
 		format(other.format),
 		imageLayout(other.imageLayout),
-		image(other.image),
-		allocator(other.allocator)
+		image(other.image)
 	{
 		other.image = nullptr;
+	}
+
+	DeviceMemory Image::allocate_memory(VkMemoryPropertyFlags properties) const
+	{
+		const auto requirements = get_memory_requirements();
+		DeviceMemory memory(device, requirements.size, requirements.memoryTypeBits, 0, properties);
+
+		Check(vkBindImageMemory(device.Handle(), image, memory.Handle(), 0),
+			"bind image memory");
+
+		return memory;
+	}
+
+	VkMemoryRequirements Image::get_memory_requirements() const
+	{
+		VkMemoryRequirements requirements;
+		vkGetImageMemoryRequirements(device.Handle(), image, &requirements);
+		return requirements;
 	}
 
 	void Image::trans_image_layout(CommandPool& commandPool, VkImageLayout newLayout)
@@ -122,7 +136,7 @@ namespace Vulkan {
 		imageLayout = newLayout;
 	}
 
-	void Image::Copy(CommandPool& commandPool, const Buffer& buffer)
+	void Image::copy(CommandPool& commandPool, const Buffer& buffer)
 	{
 
 		SingleTimeCommands::Submit(commandPool, [&](VkCommandBuffer commandBuffer)

@@ -7,12 +7,12 @@ namespace Vulkan
 	class CommandPool;
 	class ImageView;
 	class Image;
-	class Allocator;
+	class DeviceMemory;
 	class DepthBuffer 
 	{
 	public:
 		VULKAN_OBJECT(DepthBuffer)
-		DepthBuffer(Allocator const& allocator, CommandPool& commandPool, VkExtent2D extent);
+		DepthBuffer( CommandPool& commandPool, VkExtent2D extent);
 		~DepthBuffer();
 		VkFormat get_format() const { return format; }
 		const class ImageView& get_imageView() const { return *imageView; }
@@ -22,6 +22,7 @@ namespace Vulkan
 		}
 	private:
 		const VkFormat format;
+		std::unique_ptr<DeviceMemory> imageMemory;
 		std::unique_ptr<class ImageView> imageView;
 		std::unique_ptr<Image> image;
 	};

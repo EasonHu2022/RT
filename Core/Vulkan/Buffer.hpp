@@ -1,6 +1,6 @@
 #pragma once
 #include "Wrapper.hpp"
-#include "Allocator.hpp"
+#include "DeviceMemory.hpp"
 namespace Vulkan
 {
 	class CommandPool;
@@ -9,17 +9,17 @@ namespace Vulkan
 	{
 	public:
 		VULKAN_OBJECT(Buffer)
-		Buffer(const Device& device, Allocator const& allocator, size_t size, VkBufferUsageFlags usage, VmaMemoryUsage aMemoryUsage);
+		Buffer(const Device& device, size_t size, VkBufferUsageFlags usage);
 		~Buffer();
 		const class Device& get_device() const { return device; }
-
-		//copy from
+		DeviceMemory allocate_memory(VkMemoryPropertyFlags propertyFlags);
+		DeviceMemory allocate_memory(VkMemoryAllocateFlags allocateFlags, VkMemoryPropertyFlags propertyFlags);
+		VkMemoryRequirements get_memory_requirements() const;
+		VkDeviceAddress get_device_address() const;
 		void copy(CommandPool& commandPool, const Buffer& src, VkDeviceSize size);
-		VmaAllocation allocation = VK_NULL_HANDLE;
 	private:
 
 		const class Device& device;
-		const class Allocator& allocator;
 		VULKAN_HANDLES(VkBuffer, buffer)
 	};
 

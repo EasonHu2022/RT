@@ -92,6 +92,11 @@ namespace Vulkan
 			device = nullptr;
 		}
 	}
+	void Device::WaitIdle() const
+	{
+		Check(vkDeviceWaitIdle(device),
+			"wait for device idle");
+	}
 	void Device::check_required_extensions(VkPhysicalDevice physicalDevice, const std::vector<const char*>& requiredExtensions) const
 	{
 		const auto availableExtensions = get_vkEnumerate(physicalDevice, static_cast<const char*>(nullptr), vkEnumerateDeviceExtensionProperties);

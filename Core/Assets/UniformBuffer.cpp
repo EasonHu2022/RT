@@ -1,17 +1,15 @@
 #include "UniformBuffer.hpp"
 #include "Buffer.hpp"
-#include "Allocator.hpp"
 #include <cstring>
 
 namespace Assets {
 
-UniformBuffer::UniformBuffer(const Vulkan::Device& device, Vulkan::Allocator const& allocator)
+UniformBuffer::UniformBuffer(const Vulkan::Device& device)
 {
 	const auto bufferSize = sizeof(UniformBufferObject);
 
-	buffer_.reset(new Vulkan::Buffer(device, allocator, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-		VMA_MEMORY_USAGE_GPU_ONLY));
-	//memory_.reset(new Vulkan::DeviceMemory(buffer_->AllocateMemory(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)));
+	buffer_.reset(new Vulkan::Buffer(device, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT));
+	memory_.reset(new Vulkan::DeviceMemory(buffer_->allocate_memory(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)));
 }
 
 UniformBuffer::UniformBuffer(UniformBuffer&& other) noexcept :

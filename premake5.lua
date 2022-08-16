@@ -66,17 +66,23 @@ project "RayTracing VK"
 		"./third_party/ImGUI/**.cpp",
 		"./third_party/tiny_obj_loader/**.h",
 		"./third_party/tiny_obj_loader/**.cc",
+		"./third_party/freetype/**.h",
 	}
 
 	kind "ConsoleApp"
 
 	files( sources )
-
+	
+	--libdirs
+		--{
+			--"./lib",
+		--}
 
 	includedirs
 	{
 		"./third_party/GLFW/include",
 		"./third_party/volk/include",
+		"./third_party/freetype/include",
 		"./third_party/glm/include",
 		"./third_party/stb/include",
 		"./third_party/tiny_obj_loader",
@@ -87,6 +93,7 @@ project "RayTracing VK"
 		"./Core/Assets"
 	}
 	
+
 	defines 
 	{ 
 		"_GLFW_WIN32",
@@ -95,7 +102,7 @@ project "RayTracing VK"
 	
 	links "x-volk"
 	links "GLFW"
-	links "vma"
 	links "x-glm"
 	links "x-stb"
+	links "F:/WorkSpace/LEEDS/MSc project/RT/RT/lib/freetype.lib"
 --EOF

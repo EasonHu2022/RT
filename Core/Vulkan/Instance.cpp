@@ -95,6 +95,14 @@ namespace Vulkan
 
 		Check(vkCreateInstance(&createInfo, nullptr, &instance),
 			"create instance");
+
+
+		volkLoadInstance(instance);
+
+
+		GetVulkanPhysicalDevices();
+		GetVulkanLayers();
+		GetVulkanExtensions();
     }
 
     Instance::~Instance()
@@ -105,6 +113,27 @@ namespace Vulkan
 			instance = nullptr;
 		}
     }
+
+	void Instance::GetVulkanPhysicalDevices()
+	{
+		get_vkEnumerate(instance, vkEnumeratePhysicalDevices, physicalDevices);
+
+		if (physicalDevices.empty())
+		{
+			std::cerr << "found no Vulkan physical devices" << std::endl;
+			//Throw(std::runtime_error("found no Vulkan physical devices"));
+		}
+	}
+
+	void Instance::GetVulkanLayers()
+	{
+		get_vkEnumerate(vkEnumerateInstanceLayerProperties, layers);
+	}
+
+	void Instance::GetVulkanExtensions()
+	{
+		get_vkEnumerate(static_cast<const char*>(nullptr), vkEnumerateInstanceExtensionProperties, extensions);
+	}
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL debug_util_callback(
 		VkDebugUtilsMessageSeverityFlagBitsEXT aSeverity,

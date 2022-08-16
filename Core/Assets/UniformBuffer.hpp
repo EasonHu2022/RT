@@ -40,7 +40,7 @@ namespace Assets
 		UniformBuffer& operator = (const UniformBuffer&) = delete;
 		UniformBuffer& operator = (UniformBuffer&&) = delete;
 
-		explicit UniformBuffer(const Vulkan::Device& device, Vulkan::Allocator const& allocator);
+		explicit UniformBuffer(const Vulkan::Device& device);
 		UniformBuffer(UniformBuffer&& other) noexcept;
 		~UniformBuffer();
 
@@ -51,7 +51,7 @@ namespace Assets
 	private:
 
 		std::unique_ptr<Vulkan::Buffer> buffer_;
-		
+		std::unique_ptr<Vulkan::DeviceMemory> memory_;
 	};
 
 }

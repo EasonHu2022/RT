@@ -33,7 +33,7 @@ namespace Assets
 	private:
 
 		std::unique_ptr<Vulkan::Image> image_;
-		//std::unique_ptr<Vulkan::DeviceMemory> imageMemory_;
+		std::unique_ptr<Vulkan::DeviceMemory> imageMemory_;
 		std::unique_ptr<Vulkan::ImageView> imageView_;
 		std::unique_ptr<Vulkan::Sampler> sampler_;
 	};

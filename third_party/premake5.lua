@@ -18,25 +18,6 @@ project( "x-vulkan-headers" )
 
 	files( "vulkan/include/**.c" )
 	
-project( "vma" )
-	kind "StaticLib"
-
-	location "."
-
-	filter "toolset:gcc or toolset:clang"
-		buildoptions { 
-			"-Wno-unused-variable",
-			"-Wno-reorder"
-		}
-	filter {}
-	includedirs
-	{
-		"./VulkanMemoryAllocator/include",
-
-	}
-	files( "VulkanMemoryAllocator/src/*.cpp" )
-	files( "VulkanMemoryAllocator/include/*.h" )
-	
 project( "x-glm" )
 	kind "Utility"
 

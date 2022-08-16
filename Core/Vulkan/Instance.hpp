@@ -22,6 +22,9 @@ namespace Vulkan
 	//handle
 		VULKAN_HANDLES(VkInstance, instance)
 	private:
+		void GetVulkanPhysicalDevices();
+		void GetVulkanLayers();
+		void GetVulkanExtensions();
 		const Window& window;
 		std::vector<VkExtensionProperties> extensions;
 		std::vector<VkLayerProperties> layers;
