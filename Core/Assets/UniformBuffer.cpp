@@ -13,7 +13,8 @@ UniformBuffer::UniformBuffer(const Vulkan::Device& device)
 }
 
 UniformBuffer::UniformBuffer(UniformBuffer&& other) noexcept :
-	buffer_(other.buffer_.release())
+	buffer_(other.buffer_.release()),
+	memory_(other.memory_.release())
 
 {
 }
@@ -21,14 +22,14 @@ UniformBuffer::UniformBuffer(UniformBuffer&& other) noexcept :
 UniformBuffer::~UniformBuffer()
 {
 	buffer_.reset();
-
+	memory_.reset();
 }
 
 void UniformBuffer::SetValue(const UniformBufferObject& ubo)
 {
-	/*const auto data = memory_->Map(0, sizeof(UniformBufferObject));
+	const auto data = memory_->Map(0, sizeof(UniformBufferObject));
 	std::memcpy(data, &ubo, sizeof(ubo));
-	memory_->Unmap();*/
+	memory_->Unmap();
 }
 
 }

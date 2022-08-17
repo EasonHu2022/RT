@@ -58,7 +58,7 @@ UserInterface::UserInterface(
 		std::cerr << "failed to initialise ImGui GLFW adapter" << std::endl;
 		
 	}
-
+	//ImGui_ImplVulkan_LoadFunctions(vkGetDeviceProcAddrStub);
 	// Initialise ImGui Vulkan adapter
 	ImGui_ImplVulkan_InitInfo vulkanInit = {};
 	vulkanInit.Instance = device.get_surface().get_instance().Handle();

@@ -88,17 +88,17 @@ Scene::~Scene()
 	textureImageViewHandles_.clear();
 	textureImages_.clear();
 	proceduralBuffer_.reset();
-	//proceduralBufferMemory_.reset(); // release memory after bound buffer has been destroyed
+	proceduralBufferMemory_.reset(); // release memory after bound buffer has been destroyed
 	aabbBuffer_.reset();
-	//aabbBufferMemory_.reset(); // release memory after bound buffer has been destroyed
+	aabbBufferMemory_.reset(); // release memory after bound buffer has been destroyed
 	offsetBuffer_.reset();
-	//offsetBufferMemory_.reset(); // release memory after bound buffer has been destroyed
+	offsetBufferMemory_.reset(); // release memory after bound buffer has been destroyed
 	materialBuffer_.reset();
-	//materialBufferMemory_.reset(); // release memory after bound buffer has been destroyed
+	materialBufferMemory_.reset(); // release memory after bound buffer has been destroyed
 	indexBuffer_.reset();
-	//indexBufferMemory_.reset(); // release memory after bound buffer has been destroyed
+	indexBufferMemory_.reset(); // release memory after bound buffer has been destroyed
 	vertexBuffer_.reset();
-	//vertexBufferMemory_.reset(); // release memory after bound buffer has been destroyed
+	vertexBufferMemory_.reset(); // release memory after bound buffer has been destroyed
 }
 
 }
