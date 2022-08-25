@@ -20,10 +20,11 @@ int main(int argc, const char* argv[])
 	const Vulkan::WindowConfig windowConfig
 	{
 		"Real-time Ray Tracing",
-		1920,
-		1080,
-		false,
-		false
+		options.Width,
+		options.Height,
+		options.Benchmark&& options.Fullscreen,
+			options.Fullscreen,
+			false
 	};
 	RayTracer application(userSettings, windowConfig, static_cast<VkPresentModeKHR>(options.PresentMode));
 	PrintVulkanSdkInformation();
@@ -180,17 +181,24 @@ namespace
 
 				if (hasRayTracing == extensions.end())
 				{
+					std::cerr << "noRayTracing" << std::endl;
 					return false;
 				}
 
 				// We want a device with a graphics queue.
 				const auto queueFamilies = Vulkan::get_vkEnumerate(device, vkGetPhysicalDeviceQueueFamilyProperties);
 				const auto hasGraphicsQueue = std::find_if(queueFamilies.begin(), queueFamilies.end(), [](const VkQueueFamilyProperties& queueFamily)
-					{
+					{		
+						
 						return queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT;
 					});
 
-				return hasGraphicsQueue != queueFamilies.end();
+				if (hasGraphicsQueue == queueFamilies.end())
+				{
+					std::cerr << "no graphic queue" << std::endl;
+					return false;
+				}
+				
 			});
 
 		if (result == physicalDevices.end())

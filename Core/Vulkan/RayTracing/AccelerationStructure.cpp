@@ -59,7 +59,7 @@ VkAccelerationStructureBuildSizesInfoKHR AccelerationStructure::GetBuildSizes(co
 		pMaxPrimitiveCounts,
 		&sizeInfo);
 
-	// AccelerationStructure offset needs to be 256 bytes aligned (official Vulkan specs, don't ask me why).
+	// AccelerationStructure offset needs to be 256 bytes aligned (official Vulkan specs).
 	const uint64_t AccelerationStructureAlignment = 256;
 	const uint64_t ScratchAlignment = rayTracingProperties_.MinAccelerationStructureScratchOffsetAlignment();
 

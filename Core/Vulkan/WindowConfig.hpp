@@ -9,6 +9,7 @@ namespace Vulkan
 		uint32_t height;
 		bool Fullscreen = false;
 		bool Resizable = false;
+		bool CursorDisabled;
 	};
 
 }

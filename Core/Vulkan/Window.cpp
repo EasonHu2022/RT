@@ -1,19 +1,57 @@
 #include "Window.hpp"
 #include <iostream>
+#include "stb_image.h"
+#include "Exception.hpp"
 namespace Vulkan
 {
-	namespace callbacks
+	namespace
 	{
 		void GlfwErrorCallback(const int error, const char* const description)
 		{
 			std::cerr << "ERROR: GLFW: " << description << " (code: " << error << ")" << std::endl;
+		}
+
+		void GlfwKeyCallback(GLFWwindow* window, const int key, const int scancode, const int action, const int mods)
+		{
+			auto* const this_ = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			if (this_->OnKey)
+			{
+				this_->OnKey(key, scancode, action, mods);
+			}
+		}
+
+		void GlfwCursorPositionCallback(GLFWwindow* window, const double xpos, const double ypos)
+		{
+			auto* const this_ = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			if (this_->OnCursorPosition)
+			{
+				this_->OnCursorPosition(xpos, ypos);
+			}
+		}
+
+		void GlfwMouseButtonCallback(GLFWwindow* window, const int button, const int action, const int mods)
+		{
+			auto* const this_ = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			if (this_->OnMouseButton)
+			{
+				this_->OnMouseButton(button, action, mods);
+			}
+		}
+
+		void GlfwScrollCallback(GLFWwindow* window, const double xoffset, const double yoffset)
+		{
+			auto* const this_ = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			if (this_->OnScroll)
+			{
+				this_->OnScroll(xoffset, yoffset);
+			}
 		}
 	};
 
 
 	Window::Window(const WindowConfig& config) : _config(config)
 	{
-		glfwSetErrorCallback(callbacks::GlfwErrorCallback);
+		glfwSetErrorCallback(GlfwErrorCallback);
 		if (!glfwInit())
 		{
 			std::cerr << "glfwInit() failed!" << std::endl;
@@ -27,6 +65,31 @@ namespace Vulkan
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE,  GLFW_FALSE);
 		glfwWindow = glfwCreateWindow(config.width, config.height, config.windowTitle.c_str(), nullptr, nullptr);
+		if (glfwWindow == nullptr)
+		{
+			Throw(std::runtime_error("failed to create window"));
+		}
+
+		GLFWimage icon;
+		icon.pixels = stbi_load("../assets/textures/Vulkan.png", &icon.width, &icon.height, nullptr, 4);
+		if (icon.pixels == nullptr)
+		{
+			Throw(std::runtime_error("failed to load icon"));
+		}
+
+		glfwSetWindowIcon(glfwWindow, 1, &icon);
+		stbi_image_free(icon.pixels);
+
+		if (config.CursorDisabled)
+		{
+			glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+
+		glfwSetWindowUserPointer(glfwWindow, this);
+		glfwSetKeyCallback(glfwWindow, GlfwKeyCallback);
+		glfwSetCursorPosCallback(glfwWindow, GlfwCursorPositionCallback);
+		glfwSetMouseButtonCallback(glfwWindow, GlfwMouseButtonCallback);
+		glfwSetScrollCallback(glfwWindow, GlfwScrollCallback);
 	}
 
 	Window::~Window()
@@ -93,9 +156,9 @@ namespace Vulkan
 		{
 			glfwPollEvents();
 
-			if (Loops)
+			if (DrawFrame)
 			{
-				Loops();
+				DrawFrame();
 			}
 		}
 	}

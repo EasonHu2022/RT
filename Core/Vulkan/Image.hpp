@@ -32,6 +32,12 @@ namespace Vulkan
 		void copy(CommandPool& commandPool, const Buffer& buffer);
 		
 	private:
+		VULKAN_HANDLES(VkImage, image)
+
+
+
+
+
 
 		const class Device& device;
 		const VkExtent2D extent;
@@ -40,7 +46,7 @@ namespace Vulkan
 
 		
 
-		VULKAN_HANDLES(VkImage, image)
+		
 	};
 
 }

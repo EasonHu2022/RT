@@ -4,7 +4,7 @@
 #include "Window.hpp"
 namespace Vulkan
 {
-	SwapChain::SwapChain(const Device& _device, VkPresentModeKHR presentMode):device(_device),physicalDevice(_device.get_physicalDevice())
+	SwapChain::SwapChain(const Device& _device, VkPresentModeKHR _presentMode):device(_device),physicalDevice(_device.get_physicalDevice())
 	{
 		const auto details = QuerySwapChainSupport(device.get_physicalDevice(), device.get_surface().Handle());
 		if (details.Formats.empty() || details.PresentModes.empty())
@@ -16,7 +16,7 @@ namespace Vulkan
 		const auto& window = surface.get_instance().get_window();
 
 		const auto surfaceFormat = ChooseSwapSurfaceFormat(details.Formats);
-		const auto actualPresentMode = ChooseSwapPresentMode(details.PresentModes, presentMode);
+		const auto actualPresentMode = ChooseSwapPresentMode(details.PresentModes, _presentMode);
 		const auto extent = ChooseSwapExtent(window, details.Capabilities);
 		const auto imageCount = ChooseImageCount(details.Capabilities);
 
@@ -64,14 +64,6 @@ namespace Vulkan
 		{
 			imageViews.push_back(std::make_unique<ImageView>(device, image, format, VK_IMAGE_ASPECT_COLOR_BIT));
 		}
-
-		/*const auto& debugUtils = device.DebugUtils();
-
-		for (size_t i = 0; i != images_.size(); ++i)
-		{
-			debugUtils.SetObjectName(images_[i], ("Swapchain Image #" + std::to_string(i)).c_str());
-			debugUtils.SetObjectName(imageViews_[i]->Handle(), ("Swapchain ImageView #" + std::to_string(i)).c_str());
-		}*/
 	}
 	SwapChain::~SwapChain()
 	{

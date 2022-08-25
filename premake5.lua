@@ -67,17 +67,13 @@ project "RayTracing VK"
 		"./third_party/tiny_obj_loader/**.h",
 		"./third_party/tiny_obj_loader/**.cc",
 		"./third_party/freetype/**.h",
+		--"./third_party/boost/**.h",
+		--"./third_party/boost/**.hpp",
 	}
 
 	kind "ConsoleApp"
 
 	files( sources )
-	
-	--libdirs
-		--{
-			--"./lib",
-		--}
-
 	includedirs
 	{
 		"./third_party/GLFW/include",
@@ -86,14 +82,18 @@ project "RayTracing VK"
 		"./third_party/glm/include",
 		"./third_party/stb/include",
 		"./third_party/tiny_obj_loader",
-		"./third_party/VulkanMemoryAllocator/include",
 		"./third_party/ImGUI",
+		"./third_party",
 		"./Core/Utilities",
 		"./Core/Vulkan",
-		"./Core/Assets"
+		"./Core/Assets",
+		"./third_party/boost_1_80_0"
 	}
 	
-
+	libdirs
+		{
+			"./third_party/boost_1_80_0/stage/lib",
+		}
 	defines 
 	{ 
 		"_GLFW_WIN32",
@@ -104,5 +104,6 @@ project "RayTracing VK"
 	links "GLFW"
 	links "x-glm"
 	links "x-stb"
-	links "F:/WorkSpace/LEEDS/MSc project/RT/RT/lib/freetype.lib"
+	links "./lib/freetype.lib"
+	
 --EOF

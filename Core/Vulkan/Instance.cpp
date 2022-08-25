@@ -18,9 +18,6 @@ namespace Vulkan
 			
 			return;
 		}
-
-
-
 		//check version
 		uint32_t version = 0;
 		Check(vkEnumerateInstanceVersion(&version),
@@ -36,10 +33,8 @@ namespace Vulkan
 
 		// Get the list of required extensions.
 		auto extensions = window.get_required_extensions();
-
 		//validation layers
 		const auto availableLayers = get_vkEnumerate(vkEnumerateInstanceLayerProperties);
-
 		for (const char* layer : validationLayers)
 		{
 			auto result = std::find_if(availableLayers.begin(), availableLayers.end(), [layer](const VkLayerProperties& layerProperties)
@@ -52,7 +47,6 @@ namespace Vulkan
 				std::cerr << "could not find the requested validation layer: '" + std::string(layer) + "'" << std::endl;;
 			}
 		}
-
 		if (!validationLayers.empty())
 		{
 			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -66,7 +60,6 @@ namespace Vulkan
 		appInfo.applicationVersion = VK_MAKE_VERSION(1,0,0);
 		appInfo.engineVersion = VK_MAKE_VERSION(1,0,0);
 		appInfo.apiVersion = vulkanVersion;
-
 		VkInstanceCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInfo.pApplicationInfo = &appInfo;
@@ -74,12 +67,7 @@ namespace Vulkan
 		createInfo.ppEnabledExtensionNames = extensions.data();
 		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 		createInfo.ppEnabledLayerNames = validationLayers.data();
-
-
-
 		VkDebugUtilsMessengerCreateInfoEXT debugInfo{};
-
-
 		debugInfo.sType =
 			VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 		debugInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
@@ -89,14 +77,10 @@ namespace Vulkan
 			VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 		debugInfo.pfnUserCallback = &debug_util_callback;
 		debugInfo.pUserData = nullptr;
-
 		debugInfo.pNext = createInfo.pNext;
 		createInfo.pNext = &debugInfo;
-
 		Check(vkCreateInstance(&createInfo, nullptr, &instance),
 			"create instance");
-
-
 		volkLoadInstance(instance);
 
 

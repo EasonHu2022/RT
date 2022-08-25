@@ -9,7 +9,7 @@ namespace Vulkan
 {
 	Application::~Application()
 	{
-		//Application::DeleteSwapChain();
+		Application::delete_swapChain();
 
 		commandPool.reset();
 		device.reset();
@@ -61,7 +61,18 @@ namespace Vulkan
 	}
 	void Application::Start()
 	{
+		if (!device)
+		{
+			std::cerr << "physical device hase not been set!" << std::endl;
+		}
+		currentFrame = 0;
+		window->DrawFrame = [this]() {draw_frame(); };
+		window->OnKey = [this](const int key, const int scancode, const int action, const int mods){ on_key(key, scancode, action, mods); };
+		window->OnCursorPosition = [this](const double xpos, const double ypos) { on_cursorPosition(xpos, ypos); };
+		window->OnMouseButton = [this](const int button, const int action, const int mods) { on_mouseButton(button, action, mods); };
+		window->OnScroll = [this](const double xoffset, const double yoffset) { on_scroll(xoffset, yoffset); };
 		window->Start();
+		device->WaitIdle();
 	}
 
 	void Application::set_physical_device(VkPhysicalDevice physicalDevice, std::vector<const char*>& requiredExtensions, VkPhysicalDeviceFeatures& deviceFeatures, void* nextDeviceFeatures)
@@ -132,42 +143,32 @@ namespace Vulkan
 	void Application::draw_frame()
 	{
 		const auto noTimeout = std::numeric_limits<uint64_t>::max();
-
 		auto& inFlightFence = inFlightFences[currentFrame];
 		const auto imageAvailableSemaphore = imageAvailableSemaphores[currentFrame].Handle();
 		const auto renderFinishedSemaphore = renderFinishedSemaphores[currentFrame].Handle();
-
 		inFlightFence.Wait(noTimeout);
-
 		uint32_t imageIndex;
 		auto result = vkAcquireNextImageKHR(device->Handle(), swapChain->Handle(), noTimeout, imageAvailableSemaphore, nullptr, &imageIndex);
-
 		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || isWireFrame_ != graphicsPipeline->IsWireFrame())
 		{
 			recreate_swapChain();
 			return;
 		}
-
 		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 		{
 			std::cerr << "failed to acquire next image (" + std::string(ToString(result)) + ")" << std::endl;
 			
 		}
-
 		const auto commandBuffer = commandBuffers->Begin(imageIndex);
 		render(commandBuffer, imageIndex);
 		commandBuffers->End(imageIndex);
-
 		update_uniformBuffer(imageIndex);
-
 		VkSubmitInfo submitInfo = {};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-
 		VkCommandBuffer commandBuffers[]{ commandBuffer };
 		VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
-
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
@@ -175,9 +176,7 @@ namespace Vulkan
 		submitInfo.pCommandBuffers = commandBuffers;
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
-
 		inFlightFence.Reset();
-
 		Check(vkQueueSubmit(device->get_graphicsQueue(), 1, &submitInfo, inFlightFence.Handle()),
 			"submit draw command buffer");
 

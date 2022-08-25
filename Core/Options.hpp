@@ -36,6 +36,6 @@ public:
 	// Window options
 	uint32_t Width{};
 	uint32_t Height{};
-	uint32_t PresentMode{};
+	uint32_t PresentMode = 0;
 	bool Fullscreen{};
 };

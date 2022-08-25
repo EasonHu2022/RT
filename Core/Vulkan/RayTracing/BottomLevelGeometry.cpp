@@ -12,19 +12,24 @@ void BottomLevelGeometry::AddGeometryTriangles(
 	const uint32_t indexOffset, const uint32_t indexCount,
 	const bool isOpaque)
 {
+	// Describe buffer as array of VertexObj.
+	VkAccelerationStructureGeometryTrianglesDataKHR triangles{ VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR };
+	triangles.vertexFormat = VK_FORMAT_R32G32B32_SFLOAT;  // vec3 vertex position data.
+	triangles.vertexData.deviceAddress = scene.VertexBuffer().get_device_address();;
+	triangles.vertexStride = sizeof(Assets::Vertex);
+	// Describe index data (32-bit unsigned int)
+	triangles.indexType = VK_INDEX_TYPE_UINT32;
+	triangles.indexData.deviceAddress = scene.IndexBuffer().get_device_address();;
+	// Indicate identity transform by setting transformData to null device pointer.
+	triangles.transformData = {};
+	triangles.maxVertex = vertexCount;
+
+
 	VkAccelerationStructureGeometryKHR geometry = {};
 	geometry.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR;
 	geometry.pNext = nullptr;
 	geometry.geometryType = VK_GEOMETRY_TYPE_TRIANGLES_KHR;
-	geometry.geometry.triangles.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR;
-	geometry.geometry.triangles.pNext = nullptr;
-	geometry.geometry.triangles.vertexData.deviceAddress = scene.VertexBuffer().get_device_address();
-	geometry.geometry.triangles.vertexStride = sizeof(Assets::Vertex);
-	geometry.geometry.triangles.maxVertex = vertexCount;
-	geometry.geometry.triangles.vertexFormat = VK_FORMAT_R32G32B32_SFLOAT;
-	geometry.geometry.triangles.indexData.deviceAddress = scene.IndexBuffer().get_device_address();
-	geometry.geometry.triangles.indexType = VK_INDEX_TYPE_UINT32;
-	geometry.geometry.triangles.transformData = {};
+	geometry.geometry.triangles = triangles;
 	geometry.flags = isOpaque ? VK_GEOMETRY_OPAQUE_BIT_KHR : 0;
 
 	VkAccelerationStructureBuildRangeInfoKHR buildOffsetInfo = {};

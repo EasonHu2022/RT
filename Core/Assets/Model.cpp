@@ -1,4 +1,4 @@
-#include "Model.hpp"
+	#include "Model.hpp"
 #include "CornellBox.hpp"
 #include "Procedural.hpp"
 #include "Sphere.hpp"

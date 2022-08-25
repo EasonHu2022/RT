@@ -29,7 +29,12 @@ namespace Vulkan
 		bool IsMinimized() const;
 		void WaitForEvents() const;
 		//callbacks
-		std::function<void()> Loops;
+		// Callbacks
+		std::function<void()> DrawFrame;
+		std::function<void(int key, int scancode, int action, int mods)> OnKey;
+		std::function<void(double xpos, double ypos)> OnCursorPosition;
+		std::function<void(int button, int action, int mods)> OnMouseButton;
+		std::function<void(double xoffset, double yoffset)> OnScroll;
 
 
 		// Window instance properties.
