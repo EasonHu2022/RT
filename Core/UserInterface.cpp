@@ -108,6 +108,11 @@ UserInterface::UserInterface(
 	});
 
 	ImGui_ImplVulkan_DestroyFontUploadObjects();
+
+	VkPhysicalDeviceProperties2 deviceProp{};
+	deviceProp.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+	vkGetPhysicalDeviceProperties2(descriptorPool_->get_device().get_physicalDevice(), &deviceProp);
+	device_name = std::string(Vulkan::VendorId(deviceProp.properties.vendorID)) + "  " + deviceProp.properties.deviceName;
 }
 
 UserInterface::~UserInterface()
@@ -160,7 +165,7 @@ void UserInterface::DrawSettings()
 	}
 
 	const float distance = 15.0f;
-	const ImVec2 pos = ImVec2(distance, distance);
+	const ImVec2 pos = ImVec2(distance, 6.0f * distance);
 	const ImVec2 posPivot = ImVec2(0.0f, 0.0f);
 	ImGui::SetNextWindowPos(pos, ImGuiCond_Always, posPivot);
 
@@ -180,6 +185,14 @@ void UserInterface::DrawSettings()
 		}
 
 		const auto& window = descriptorPool_->get_device().get_surface().get_instance().get_window();
+		ImGui::NewLine();
+
+		ImGui::Text("Device : ");
+		ImGui::Separator();
+		ImGui::PushItemWidth(-1);
+		
+		ImGui::BulletText(device_name.data());
+		ImGui::PopItemWidth();
 		ImGui::NewLine();
 
 		ImGui::Text("Scene");
@@ -216,8 +229,8 @@ void UserInterface::DrawOverlay(const Statistics& statistics)
 
 	const auto& io = ImGui::GetIO();
 	const float distance = 10.0f;
-	const ImVec2 pos = ImVec2(io.DisplaySize.x - distance, distance);
-	const ImVec2 posPivot = ImVec2(1.0f, 0.0f);
+	const ImVec2 pos = ImVec2(io.DisplaySize.x - distance, io.DisplaySize.y- distance);
+	const ImVec2 posPivot = ImVec2(1.0f, 1.0f);
 	ImGui::SetNextWindowPos(pos, ImGuiCond_Always, posPivot);
 	ImGui::SetNextWindowBgAlpha(0.3f); // Transparent background
 

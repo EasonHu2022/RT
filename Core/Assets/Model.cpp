@@ -128,7 +128,7 @@ Model Model::LoadModel(const std::string& filename)
 				};
 			}
 
-			vertex.MaterialIndex = std::max(0, mesh.material_ids[faceId++ / 3]);
+			vertex.MaterialIndex = 0; //std::max(0, mesh.material_ids[faceId++ / 3]);
 
 			if (uniqueVertices.count(vertex) == 0)
 			{
@@ -140,9 +140,7 @@ Model Model::LoadModel(const std::string& filename)
 		}
 	}
 
-	// If the model did not specify normals, then create smooth normals that conserve the same number of vertices.
-	// Using flat normals would mean creating more vertices than we currently have, so for simplicity and better visuals we don't do it.
-	// See https://stackoverflow.com/questions/12139840/obj-file-averaging-normals.
+
 	if (objAttrib.normals.empty())
 	{
 		std::vector<vec3> normals(vertices.size());

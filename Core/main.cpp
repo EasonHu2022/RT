@@ -2,13 +2,16 @@
 #include "UserSettings.hpp"
 #include "Options.hpp"
 #include "RayTracer.hpp"
+#include "Version.hpp"
+#include <Wrapper.hpp>
+#include <Exception.hpp>
 namespace
 {
 	UserSettings CreateUserSettings(const Options& options);
 	void PrintVulkanSdkInformation();
 	void PrintVulkanInstanceInformation(const Vulkan::Application& application, bool benchmark);
 	void PrintVulkanLayersInformation(const Vulkan::Application& application, bool benchmark);
-	void PrintVulkanDevices(const Vulkan::Application& application);
+	void PrintVulkanDevices(const Vulkan::Application& application );
 	void PrintVulkanSwapChainInformation(const Vulkan::Application& application, bool benchmark);
 	void SetVulkanDevice(Vulkan::Application& application);
 }
@@ -87,7 +90,7 @@ namespace
 
 		for (const auto& extension : application.get_extensions())
 		{
-			//std::cout << "- " << extension.extensionName << " (" << Vulkan::Version(extension.specVersion) << ")" << std::endl;
+			std::cout << "- " << extension.extensionName << " (" << Vulkan::Version(extension.specVersion) << ")" << std::endl;
 		}
 
 		std::cout << std::endl;
@@ -104,10 +107,10 @@ namespace
 
 		for (const auto& layer : application.get_layers())
 		{
-			/*std::cout
+			std::cout
 				<< "- " << layer.layerName
 				<< " (" << Vulkan::Version(layer.specVersion) << ")"
-				<< " : " << layer.description << std::endl;*/
+				<< " : " << layer.description << std::endl;
 		}
 
 		std::cout << std::endl;
@@ -133,16 +136,17 @@ namespace
 
 			const auto& prop = deviceProp.properties;
 
-		/*	const Vulkan::Version vulkanVersion(prop.apiVersion);
-			const Vulkan::Version driverVersion(prop.driverVersion, prop.vendorID);*/
+			const Vulkan::Version vulkanVersion(prop.apiVersion);
+			const Vulkan::Version driverVersion(prop.driverVersion, prop.vendorID);
 
-			//std::cout << "- [" << prop.deviceID << "] ";
-			//std::cout << Vulkan::Strings::VendorId(prop.vendorID) << " '" << prop.deviceName;
-			//std::cout << "' (";
-			//std::cout << Vulkan::Strings::DeviceType(prop.deviceType) << ": ";
-			//std::cout << "vulkan " << vulkanVersion << ", ";
-			//std::cout << "driver " << driverProp.driverName << " " << driverProp.driverInfo << " - " << driverVersion;
-			//std::cout << ")" << std::endl;
+			std::cout << "- [" << prop.deviceID << "] ";
+			std::cout <<Vulkan::VendorId(prop.vendorID) << " '" << prop.deviceName;
+			std::cout << "' (";
+			std::cout << Vulkan::DeviceType(prop.deviceType) << ": ";
+			std::cout << "vulkan " << vulkanVersion << ", ";
+			std::cout << "driver " << driverProp.driverName << " " << driverProp.driverInfo << " - " << driverVersion;
+			std::cout << ")" << std::endl;
+
 		}
 
 		std::cout << std::endl;
@@ -196,6 +200,7 @@ namespace
 				if (hasGraphicsQueue == queueFamilies.end())
 				{
 					std::cerr << "no graphic queue" << std::endl;
+
 					return false;
 				}
 				
@@ -203,8 +208,8 @@ namespace
 
 		if (result == physicalDevices.end())
 		{
-			std::cerr << "cannot find a suitable device" << std::endl;
-			//Throw(std::runtime_error("cannot find a suitable device"));
+			//std::cerr << "cannot find a suitable device" << std::endl;
+			Vulkan::Throw(std::runtime_error("cannot find a suitable device"));
 		}
 
 		VkPhysicalDeviceProperties2 deviceProp{};
@@ -214,6 +219,8 @@ namespace
 		std::cout << "Setting Device [" << deviceProp.properties.deviceID << "]:" << std::endl;
 
 		application.set_physical_device(*result);
+
+		
 
 		std::cout << std::endl;
 	}

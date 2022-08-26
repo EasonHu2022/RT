@@ -26,4 +26,6 @@ namespace Vulkan {
     const char* ToString(const VkResult result);
 	std::string to_string(VkDebugUtilsMessageSeverityFlagBitsEXT aSeverity);
 	std::string message_type_flags(VkDebugUtilsMessageTypeFlagsEXT aFlags);
+	const char* DeviceType(VkPhysicalDeviceType deviceType);
+	const char* VendorId(uint32_t vendorId);
 }

@@ -69,6 +69,9 @@ const std::vector<std::pair<std::string, std::function<SceneAssets (SceneList::C
 	{"Lucy In One Weekend", LucyInOneWeekend},
 	{"Cornell Box", CornellBox},
 	{"Cornell Box & Lucy", CornellBoxLucy},
+	{"Sponza No Texture",Sponza},
+	{"Modified CornellBox",CornellBoxModified},
+	
 };
 
 SceneAssets SceneList::CubeAndSpheres(CameraInitialSate& camera)
@@ -244,6 +247,37 @@ SceneAssets SceneList::CornellBox(CameraInitialSate& camera)
 	return std::make_tuple(std::move(models), std::vector<Texture>());
 }
 
+SceneAssets SceneList::CornellBoxModified(CameraInitialSate& camera)
+{
+	camera.ModelView = lookAt(vec3(278, 278, 800), vec3(278, 278, 0), vec3(0, 1, 0));
+	camera.FieldOfView = 40;
+	camera.Aperture = 0.0f;
+	camera.FocusDistance = 10.0f;
+	camera.ControlSpeed = 500.0f;
+	camera.GammaCorrection = true;
+	camera.HasSky = false;
+
+	const auto i = mat4(1);
+	const auto white = Material::Lambertian(vec3(0.73f, 0.73f, 0.73f));
+	const auto metal = Material::Metallic(vec3(0.73f, 0.73f, 0.73f),0.05f);
+	const auto dielectric = Material::Dielectric(1.5f);
+	auto box0 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 165, 0), white);
+	auto box1 = Model::CreateBox(vec3(0, 0, -165), vec3(165, 330, 0), white);
+	auto ball = Model::CreateSphere(vec3(82.5f, 82.5f, -82.5f), 82.5f, metal, false);
+	auto bal2 = Model::CreateSphere(vec3(82.5f, 82.5f, -82.5f), 82.5f, dielectric, false);
+	box0.Transform(rotate(translate(i, vec3(555 - 130 - 165, 0, -65)), radians(-18.0f), vec3(0, 1, 0)));
+	box1.Transform(rotate(translate(i, vec3(555 - 265 - 165, 0, -295)), radians(15.0f), vec3(0, 1, 0)));
+	ball.Transform(rotate(translate(i, vec3(555 - 265 - 165, 0, -65)), radians(15.0f), vec3(0, 1, 0)));
+	bal2.Transform(rotate(translate(i, vec3(555 - 130 - 165, 165, -65)), radians(15.0f), vec3(0, 1, 0)));
+	std::vector<Model> models;
+	models.push_back(Model::CreateCornellBox(555));
+	models.push_back(box0);
+	models.push_back(box1);
+	models.push_back(ball);
+	models.push_back(bal2);
+	return std::make_tuple(std::move(models), std::vector<Texture>());
+}
+
 SceneAssets SceneList::CornellBoxLucy(CameraInitialSate& camera)
 {
 	camera.ModelView = lookAt(vec3(278, 278, 800), vec3(278, 278, 0), vec3(0, 1, 0));
@@ -271,4 +305,38 @@ SceneAssets SceneList::CornellBoxLucy(CameraInitialSate& camera)
 	models.push_back(lucy0);
 
 	return std::forward_as_tuple(std::move(models), std::vector<Texture>());
+}
+
+SceneAssets SceneList::Sponza(CameraInitialSate& camera)
+{
+	// Same as RayTracingInOneWeekend but using textures.
+
+	camera.ModelView = lookAt(vec3(13, 2, 3), vec3(0, 0, 0), vec3(0, 1, 0));
+	camera.FieldOfView = 20;
+	camera.Aperture = 0.1f;
+	camera.FocusDistance = 10.0f;
+	camera.ControlSpeed = 5.0f;
+	camera.GammaCorrection = true;
+	camera.HasSky = true;
+
+	const bool isProc = false;
+
+	std::mt19937 engine(42);
+	std::function<float()> random = std::bind(std::uniform_real_distribution<float>(), engine);
+
+	std::vector<Model> models;
+	std::vector<Texture> textures;
+
+	//AddRayTracingInOneWeekendCommonScene(models, isProc, random);
+	auto sponza = Model::LoadModel("./assets/models/sponza.obj");
+	//sponza.SetMaterial(Material::Metallic(vec3(0.7f, 0.5f, 0.8f), 0.2f));
+	models.push_back(sponza);
+	/*models.push_back(Model::CreateSphere(vec3(-4, 1, 0), 1.0f, Material::Lambertian(vec3(1.0f), 0), isProc));
+	models.push_back(Model::CreateSphere(vec3(4, 1, 0), 1.0f, Material::Metallic(vec3(1.0f), 0.0f, 1), isProc));*/
+
+	//textures.push_back(Texture::LoadTexture("./assets/textures/2k_mars.jpg", Vulkan::SamplerConfig()));
+	//textures.push_back(Texture::LoadTexture("./assets/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
+	//textures.push_back(Texture::LoadTexture("./assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
+
+	return std::forward_as_tuple(std::move(models), std::move(textures));
 }

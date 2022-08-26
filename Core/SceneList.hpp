@@ -33,7 +33,9 @@ public:
 	static SceneAssets PlanetsInOneWeekend(CameraInitialSate& camera);
 	static SceneAssets LucyInOneWeekend(CameraInitialSate& camera);
 	static SceneAssets CornellBox(CameraInitialSate& camera);
+	static SceneAssets CornellBoxModified(CameraInitialSate& camera);
 	static SceneAssets CornellBoxLucy(CameraInitialSate& camera);
+	static SceneAssets Sponza(CameraInitialSate& camera);
 
 	static const std::vector<std::pair<std::string, std::function<SceneAssets (CameraInitialSate&)>>> AllScenes;
 };

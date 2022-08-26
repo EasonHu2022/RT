@@ -2,6 +2,8 @@
 
 struct UserSettings final
 {
+
+
 	// Application
 	bool Benchmark;
 
