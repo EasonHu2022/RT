@@ -92,7 +92,7 @@ UserInterface::UserInterface(
 
 	// Upload ImGui fonts (use ImGuiFreeType for better font rendering, see https://github.com/ocornut/imgui/tree/master/misc/freetype).
 	io.Fonts->FontBuilderIO = ImGuiFreeType::GetBuilderForFreeType();
-	if (!io.Fonts->AddFontFromFileTTF("../assets/fonts/Cousine-Regular.ttf", 13 * scaleFactor))
+	if (!io.Fonts->AddFontFromFileTTF("./assets/fonts/Cousine-Regular.ttf", 13 * scaleFactor))
 	{
 		std::cerr << "failed to load ImGui font" << std::endl;	
 		
@@ -159,7 +159,7 @@ void UserInterface::DrawSettings()
 		return;
 	}
 
-	const float distance = 10.0f;
+	const float distance = 15.0f;
 	const ImVec2 pos = ImVec2(distance, distance);
 	const ImVec2 posPivot = ImVec2(0.0f, 0.0f);
 	ImGui::SetNextWindowPos(pos, ImGuiCond_Always, posPivot);
@@ -171,7 +171,7 @@ void UserInterface::DrawSettings()
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoSavedSettings;
 
-	if (ImGui::Begin("Settings", &Settings().ShowSettings, flags))
+	if (ImGui::Begin("Options", &Settings().ShowSettings, flags))
 	{
 		std::vector<const char*> scenes;
 		for (const auto& scene : SceneList::AllScenes)
@@ -180,18 +180,6 @@ void UserInterface::DrawSettings()
 		}
 
 		const auto& window = descriptorPool_->get_device().get_surface().get_instance().get_window();
-
-		ImGui::Text("Help");
-		ImGui::Separator();
-		ImGui::BulletText("F1: toggle Settings.");
-		ImGui::BulletText("F2: toggle Statistics.");
-		ImGui::BulletText(
-			"%c%c%c%c/SHIFT/CTRL: move camera.", 
-			std::toupper(window.get_key_name(GLFW_KEY_W, 0)[0]),
-			std::toupper(window.get_key_name(GLFW_KEY_A, 0)[0]),
-			std::toupper(window.get_key_name(GLFW_KEY_S, 0)[0]),
-			std::toupper(window.get_key_name(GLFW_KEY_D, 0)[0]));
-		ImGui::BulletText("L/R Mouse: rotate camera/scene.");
 		ImGui::NewLine();
 
 		ImGui::Text("Scene");
@@ -204,24 +192,16 @@ void UserInterface::DrawSettings()
 		ImGui::Text("Ray Tracing");
 		ImGui::Separator();
 		ImGui::Checkbox("Enable ray tracing", &Settings().IsRayTraced);
-		ImGui::Checkbox("Accumulate rays between frames", &Settings().AccumulateRays);
+		ImGui::Checkbox("Accumulate frames", &Settings().AccumulateRays);
 		uint32_t min = 1, max = 128;
 		ImGui::SliderScalar("Samples", ImGuiDataType_U32, &Settings().NumberOfSamples, &min, &max);
 		min = 1, max = 32;
 		ImGui::SliderScalar("Bounces", ImGuiDataType_U32, &Settings().NumberOfBounces, &min, &max);
 		ImGui::NewLine();
 
-		ImGui::Text("Camera");
-		ImGui::Separator();
-		ImGui::SliderFloat("FoV", &Settings().FieldOfView, UserSettings::FieldOfViewMinValue, UserSettings::FieldOfViewMaxValue, "%.0f");
-		ImGui::SliderFloat("Aperture", &Settings().Aperture, 0.0f, 1.0f, "%.2f");
-		ImGui::SliderFloat("Focus", &Settings().FocusDistance, 0.1f, 20.0f, "%.1f");
-		ImGui::NewLine();
-
 		ImGui::Text("Profiler");
 		ImGui::Separator();
 		ImGui::Checkbox("Show heatmap", &Settings().ShowHeatmap);
-		ImGui::SliderFloat("Scaling", &Settings().HeatmapScale, 0.10f, 10.0f, "%.2f", ImGuiSliderFlags_Logarithmic);
 		ImGui::NewLine();
 	}
 	ImGui::End();

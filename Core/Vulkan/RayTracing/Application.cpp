@@ -169,57 +169,44 @@ void Application::delete_swapChain()
 void Application::render(VkCommandBuffer commandBuffer, const uint32_t imageIndex)
 {
 	const auto extent = get_swapChain().get_extent();
-
 	VkDescriptorSet descriptorSets[] = { rayTracingPipeline_->DescriptorSet(imageIndex) };
-
 	VkImageSubresourceRange subresourceRange = {};
 	subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	subresourceRange.baseMipLevel = 0;
 	subresourceRange.levelCount = 1;
 	subresourceRange.baseArrayLayer = 0;
 	subresourceRange.layerCount = 1;
-
 	// Acquire destination images for rendering.
 	ImageMemoryBarrier::Insert(commandBuffer, accumulationImage_->Handle(), subresourceRange, 0,
 		VK_ACCESS_SHADER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
-
 	ImageMemoryBarrier::Insert(commandBuffer, outputImage_->Handle(), subresourceRange, 0,
 		VK_ACCESS_SHADER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
-
 	// Bind ray tracing pipeline.
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, rayTracingPipeline_->Handle());
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, rayTracingPipeline_->PipelineLayout().Handle(), 0, 1, descriptorSets, 0, nullptr);
-
 	// Describe the shader binding table.
 	VkStridedDeviceAddressRegionKHR raygenShaderBindingTable = {};
 	raygenShaderBindingTable.deviceAddress = shaderBindingTable_->RayGenDeviceAddress();
 	raygenShaderBindingTable.stride = shaderBindingTable_->RayGenEntrySize();
 	raygenShaderBindingTable.size = shaderBindingTable_->RayGenSize();
-
 	VkStridedDeviceAddressRegionKHR missShaderBindingTable = {};
 	missShaderBindingTable.deviceAddress = shaderBindingTable_->MissDeviceAddress();
 	missShaderBindingTable.stride = shaderBindingTable_->MissEntrySize();
 	missShaderBindingTable.size = shaderBindingTable_->MissSize();
-
 	VkStridedDeviceAddressRegionKHR hitShaderBindingTable = {};
 	hitShaderBindingTable.deviceAddress = shaderBindingTable_->HitGroupDeviceAddress();
 	hitShaderBindingTable.stride = shaderBindingTable_->HitGroupEntrySize();
 	hitShaderBindingTable.size = shaderBindingTable_->HitGroupSize();
-
 	VkStridedDeviceAddressRegionKHR callableShaderBindingTable = {};
-
 	// Execute ray tracing shaders.
 	deviceProcedures_->vkCmdTraceRaysKHR(commandBuffer,
 		&raygenShaderBindingTable, &missShaderBindingTable, &hitShaderBindingTable, &callableShaderBindingTable,
 		extent.width, extent.height, 1);
-
 	// Acquire output image and swap-chain image for copying.
 	ImageMemoryBarrier::Insert(commandBuffer, outputImage_->Handle(), subresourceRange, 
 		VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-
 	ImageMemoryBarrier::Insert(commandBuffer, get_swapChain().Images()[imageIndex], subresourceRange, 0,
 		VK_ACCESS_TRANSFER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-
 	// Copy output image into swap-chain image.
 	VkImageCopy copyRegion;
 	copyRegion.srcSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
@@ -227,12 +214,10 @@ void Application::render(VkCommandBuffer commandBuffer, const uint32_t imageInde
 	copyRegion.dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
 	copyRegion.dstOffset = { 0, 0, 0 };
 	copyRegion.extent = { extent.width, extent.height, 1 };
-
 	vkCmdCopyImage(commandBuffer,
 		outputImage_->Handle(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 		get_swapChain().Images()[imageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 		1, &copyRegion);
-
 	ImageMemoryBarrier::Insert(commandBuffer, get_swapChain().Images()[imageIndex], subresourceRange, VK_ACCESS_TRANSFER_WRITE_BIT,
 		0, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 }

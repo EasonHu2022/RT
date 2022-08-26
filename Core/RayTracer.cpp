@@ -267,7 +267,7 @@ void RayTracer::LoadScene(const uint32_t sceneIndex)
 	// If there are no texture, add a dummy one. It makes the pipeline setup a lot easier.
 	if (textures.empty())
 	{
-		textures.push_back(Assets::Texture::LoadTexture("../assets/textures/white.png", Vulkan::SamplerConfig()));
+		textures.push_back(Assets::Texture::LoadTexture("./assets/textures/white.png", Vulkan::SamplerConfig()));
 	}
 	
 	scene_.reset(new Assets::Scene(get_commandPool(), std::move(models), std::move(textures)));

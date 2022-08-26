@@ -86,12 +86,12 @@ SceneAssets SceneList::CubeAndSpheres(CameraInitialSate& camera)
 	std::vector<Model> models;
 	std::vector<Texture> textures;
 
-	models.push_back(Model::LoadModel("../assets/models/cube_multi.obj"));
+	models.push_back(Model::LoadModel("./assets/models/cube_multi.obj"));
 	models.push_back(Model::CreateSphere(vec3(1, 0, 0), 0.5, Material::Metallic(vec3(0.7f, 0.5f, 0.8f), 0.2f), true));
 	models.push_back(Model::CreateSphere(vec3(-1, 0, 0), 0.5, Material::Dielectric(1.5f), true));
 	models.push_back(Model::CreateSphere(vec3(0, 1, 0), 0.5, Material::Lambertian(vec3(1.0f), 0), true));
 
-	textures.push_back(Texture::LoadTexture("../assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture("./assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
 
 	return std::forward_as_tuple(std::move(models), std::move(textures));
 }
@@ -150,9 +150,9 @@ SceneAssets SceneList::PlanetsInOneWeekend(CameraInitialSate& camera)
 	models.push_back(Model::CreateSphere(vec3(-4, 1, 0), 1.0f, Material::Lambertian(vec3(1.0f), 0), isProc));
 	models.push_back(Model::CreateSphere(vec3(4, 1, 0), 1.0f, Material::Metallic(vec3(1.0f), 0.0f, 1), isProc));
 
-	textures.push_back(Texture::LoadTexture("../assets/textures/2k_mars.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture("../assets/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
-	textures.push_back(Texture::LoadTexture("../assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture("./assets/textures/2k_mars.jpg", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture("./assets/textures/2k_moon.jpg", Vulkan::SamplerConfig()));
+	textures.push_back(Texture::LoadTexture("./assets/textures/land_ocean_ice_cloud_2048.png", Vulkan::SamplerConfig()));
 
 	return std::forward_as_tuple(std::move(models), std::move(textures));
 }
@@ -178,7 +178,7 @@ SceneAssets SceneList::LucyInOneWeekend(CameraInitialSate& camera)
 	
 	AddRayTracingInOneWeekendCommonScene(models, isProc, random);
 
-	auto lucy0 = Model::LoadModel("../assets/models/lucy.obj");
+	auto lucy0 = Model::LoadModel("./assets/models/lucy.obj");
 	auto lucy1 = lucy0;
 	auto lucy2 = lucy0;
 
@@ -256,7 +256,7 @@ SceneAssets SceneList::CornellBoxLucy(CameraInitialSate& camera)
 
 	const auto i = mat4(1);
 	const auto sphere = Model::CreateSphere(vec3(555 - 130, 165.0f, -165.0f / 2 - 65), 80.0f, Material::Dielectric(1.5f), true);
-	auto lucy0 = Model::LoadModel("../assets/models/lucy.obj");
+	auto lucy0 = Model::LoadModel("./assets/models/lucy.obj");
 
 	lucy0.Transform(
 		rotate(

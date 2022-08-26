@@ -79,25 +79,20 @@ VkAccelerationStructureInstanceKHR TopLevelAccelerationStructure::CreateInstance
 {
 	const auto& device = bottomLevelAs.Device();
 	const auto& deviceProcedure = bottomLevelAs.DeviceProcedures();
-
 	VkAccelerationStructureDeviceAddressInfoKHR addressInfo = {};
 	addressInfo.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR;
-	addressInfo.accelerationStructure = bottomLevelAs.Handle();
-	
+	addressInfo.accelerationStructure = bottomLevelAs.Handle();	
 	const VkDeviceAddress address = deviceProcedure.vkGetAccelerationStructureDeviceAddressKHR(device.Handle(), &addressInfo);
-
 	VkAccelerationStructureInstanceKHR instance = {};
 	instance.instanceCustomIndex = instanceId;
 	instance.mask = 0xFF; // The visibility mask is always set of 0xFF, but if some instances would need to be ignored in some cases, this flag should be passed by the application.
 	instance.instanceShaderBindingTableRecordOffset = hitGroupId; // Set the hit group index, that will be used to find the shader code to execute when hitting the geometry.
 	instance.flags = VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR; // Disable culling - more fine control could be provided by the application
 	instance.accelerationStructureReference = address;
-
 	// The instance.transform value only contains 12 values, corresponding to a 4x3 matrix,
 	// hence saving the last row that is anyway always (0,0,0,1).
 	// Since the matrix is row-major, we simply copy the first 12 values of the original 4x4 matrix
 	std::memcpy(&instance.transform, &transform, sizeof(instance.transform));
-
 	return instance;
 }
 

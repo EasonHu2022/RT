@@ -55,6 +55,7 @@ workspace "RayTracer"
 -- Third party dependencies
 include "third_party" 
 include "third_party/GLFW" 
+dofile( "glslc.lua" )
 -- Projects
 project "RayTracing VK"
 	local sources = { 
@@ -106,4 +107,22 @@ project "RayTracing VK"
 	links "x-stb"
 	links "./lib/freetype.lib"
 	
+	
+project "RT-shaders"
+	local shaders = { 
+		"./Core/Assets/shaders/*.frag",
+		"./Core/Assets/shaders/*.vert",
+		"./Core/Assets/shaders/*.glsl",
+		"./Core/Assets/shaders/*.rchit",
+		"./Core/Assets/shaders/*.rint",
+		"./Core/Assets/shaders/*.rgen",
+		"./Core/Assets/shaders/*.rmiss",
+	}
+
+	kind "Utility"
+	location "./Core/Assets/shaders"
+
+	files( shaders )
+
+	handle_glsl_files( "-O", "assets/shaders", {} )	
 --EOF
